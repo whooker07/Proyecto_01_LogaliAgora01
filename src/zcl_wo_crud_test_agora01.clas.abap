@@ -31,7 +31,8 @@ CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
 
     DATA ls_workorder TYPE ztwork_order.
 
-    lv_test = '2'.
+*  test crud
+    lv_test = '4'.
 
     CASE lv_test.
       WHEN '1'.
@@ -53,12 +54,18 @@ CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
           out->write(  ls_workorder ).
         ENDIF.
 
-      WHEN '3'.
+      WHEN '4'.
         test_delete_work_order(   IMPORTING
                                             rv_valid = lv_valid
                                             rv_message = lv_message ).
 
-        out->write( | { lv_message }| ).
+        if lv_valid = abap_false.
+         out->write( | { lv_message }| ).
+         else.
+          out->write( | work order  deleted correctly | ).
+        endif.
+
+
 
 
 
@@ -73,7 +80,7 @@ CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
 
     " Llamar al método de instancia
 
-    lo_instance->create_work_order( EXPORTING  iv_work_order_id = 7
+    lo_instance->create_work_order( EXPORTING  iv_work_order_id = 9
                                       iv_customer_id  = '1'
                                       iv_technician_id = '1'
                                       iv_priority = 'A'
@@ -95,7 +102,7 @@ CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
 
     " Llamar al método de instancia
 
-    lo_instance->read_work_order( EXPORTING  iv_work_order_id = 2
+    lo_instance->read_work_order( EXPORTING  iv_work_order_id = 9
 
                                       IMPORTING
                                       rv_valid = rv_valid
@@ -104,11 +111,18 @@ CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
 
 
 
-
-
   ENDMETHOD.
 
   METHOD test_delete_work_order.
+     DATA(lo_instance) = NEW zcl_wo_crud_handler_agora01( ).
+
+    " Llamar al método de instancia
+
+    lo_instance->delete_work_order( EXPORTING  iv_work_order_id = 7
+
+                                      IMPORTING
+                                      rv_valid = rv_valid
+                                      rv_message = rv_message ).
 
   ENDMETHOD.
 

@@ -19,7 +19,10 @@ CLASS zcl_wo_crud_handler_agora01 DEFINITION
 
                       EXPORTING rv_valid         TYPE abap_bool
                                 rv_message       TYPE string
-                                rv_ls_work_order TYPE ztwork_order.
+                                rv_ls_work_order TYPE ztwork_order,
+      delete_work_order IMPORTING iv_work_order_id TYPE zde_workorderid_agora01
+                        EXPORTING rv_valid         TYPE abap_bool
+                                  rv_message       TYPE string.
 
   PROTECTED SECTION.
   PRIVATE SECTION.
@@ -86,6 +89,44 @@ CLASS zcl_wo_crud_handler_agora01 IMPLEMENTATION.
     ELSE.
       rv_message =  | Work order { iv_work_order_id } Not exists |  .
       rv_valid = abap_false.
+    ENDIF.
+
+
+  ENDMETHOD.
+
+  METHOD delete_work_order.
+
+    DATA: ls_workorder TYPE ztwork_order.
+
+    DATA(lo_instance) = NEW zcl_wo_validator_agora01( ).
+
+    " Llamar al método de instancia
+
+    IF lo_instance->validate_delete_order( iv_work_order_id   = iv_work_order_id ) = abap_false.
+
+      rv_message =  | Data validation of deleting work order not valid, please check |  .
+      rv_valid = abap_false.
+      RETURN.
+    ENDIF.
+
+    SELECT SINGLE FROM ztwork_order
+    FIELDS *
+    WHERE work_order_id = @iv_work_order_id
+    INTO @DATA(ls_work_order).
+
+    IF sy-subrc = 0.
+
+      DELETE ztwork_order FROM @ls_work_order.
+
+      IF sy-subrc = 0.
+        rv_valid = abap_true.
+        RETURN.
+      ELSE.
+        rv_valid = abap_false.
+        RETURN.
+
+      ENDIF.
+
     ENDIF.
 
 

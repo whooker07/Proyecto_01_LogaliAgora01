@@ -10,10 +10,10 @@ CLASS zcl_wo_validator_agora01 DEFINITION
                                       iv_technician_id TYPE string
                                       iv_priority      TYPE string
                             RETURNING VALUE(rv_valid)  TYPE abap_bool,
-      validate_update_order IMPORTING iv_work_order_id TYPE string
+      validate_update_order IMPORTING iv_work_order_id TYPE zde_workorderid_agora01
                                       iv_status        TYPE string
                             RETURNING VALUE(rv_valid)  TYPE abap_bool,
-      validate_delete_order IMPORTING iv_work_order_id TYPE string
+      validate_delete_order IMPORTING iv_work_order_id TYPE zde_workorderid_agora01
                             RETURNING VALUE(rv_valid)  TYPE abap_bool,
       validate_status_and_priority IMPORTING iv_status       TYPE string
                                              iv_priority     TYPE string
@@ -27,15 +27,15 @@ CLASS zcl_wo_validator_agora01 DEFINITION
                             RETURNING VALUE(rv_exists) TYPE abap_bool,
       check_technician_exists IMPORTING iv_technician_id TYPE string
                               RETURNING VALUE(rv_exists) TYPE abap_bool,
-      check_order_exists IMPORTING iv_work_order_id TYPE string
+      check_order_exists IMPORTING iv_work_order_id TYPE zde_workorderid_agora01
                          RETURNING VALUE(rv_exists) TYPE abap_bool,
-      check_order_history IMPORTING iv_work_order_id TYPE string
+      check_order_history IMPORTING iv_work_order_id TYPE zde_workorderid_agora01
                           RETURNING VALUE(rv_exists) TYPE abap_bool,
       check_priority_exists IMPORTING iv_priority_id   TYPE string
                             RETURNING VALUE(rv_exists) TYPE abap_bool,
       check_status_exists IMPORTING iv_status_id     TYPE string
                           RETURNING VALUE(rv_exists) TYPE abap_bool,
-      check_order_status IMPORTING iv_work_order_id TYPE string
+      check_order_status IMPORTING iv_work_order_id TYPE zde_workorderid_agora01
                          RETURNING VALUE(rv_status) TYPE string.
 
 

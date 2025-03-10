@@ -11,7 +11,6 @@ CLASS zcl_wo_validator_agora01 DEFINITION
                                       iv_priority      TYPE string
                             RETURNING VALUE(rv_valid)  TYPE abap_bool,
       validate_update_order IMPORTING iv_work_order_id TYPE zde_workorderid_agora01
-                                      iv_status        TYPE string
                             RETURNING VALUE(rv_valid)  TYPE abap_bool,
       validate_delete_order IMPORTING iv_work_order_id TYPE zde_workorderid_agora01
                             RETURNING VALUE(rv_valid)  TYPE abap_bool,
@@ -84,8 +83,8 @@ CLASS zcl_wo_validator_agora01 IMPLEMENTATION.
     ENDIF.
 
 *    " Check if the order status is editable (e.g., Pending)
-    DATA(lv_status_exists) = check_status_exists( iv_status ).
-    IF lv_status_exists IS INITIAL.
+    DATA(lv_order_status) = check_order_status( iv_work_order_id ).
+    IF lv_order_status NE 'PE'.
       rv_valid = abap_false.
       RETURN.
     ENDIF.

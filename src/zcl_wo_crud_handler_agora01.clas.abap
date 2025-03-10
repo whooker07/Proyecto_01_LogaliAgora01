@@ -25,18 +25,18 @@ CLASS zcl_wo_crud_handler_agora01 IMPLEMENTATION.
 
     DATA: ls_workorder TYPE ztwork_order.
 
-*    DATA(lo_instance) = NEW zcl_wo_validator_agora01( ).
+    DATA(lo_instance) = NEW zcl_wo_validator_agora01( ).
 
     " Llamar al método de instancia
 
-*    IF lo_instance->validate_create_order( iv_customer_id   = iv_customer_id
-*                                           iv_technician_id = iv_technician_id
-*                                           iv_priority      = iv_priority ) = abap_false.
-*
-*      rv_message =  | Data validation of creating work order not valid, please check |  .
-*      rv_valid = abap_false.
-*      RETURN.
-*    ENDIF.
+    IF lo_instance->validate_create_order( iv_customer_id   = iv_customer_id
+                                           iv_technician_id = iv_technician_id
+                                           iv_priority      = iv_priority ) = abap_false.
+
+      rv_message =  | Data validation of creating work order not valid, please check |  .
+      rv_valid = abap_false.
+      RETURN.
+    ENDIF.
 
     ls_workorder = VALUE #( work_order_id = iv_work_order_id
                             customer_id   = iv_customer_id
@@ -47,7 +47,7 @@ CLASS zcl_wo_crud_handler_agora01 IMPLEMENTATION.
                             creation_date = iv_creation_date ).
     TRY.
         INSERT ztwork_order FROM @ls_workorder.
-      CATCH cx_sy_open_sql_data_error INTO DATA(lx_sql_db).
+      CATCH cx_sy_open_sql_db INTO DATA(lx_sql_db).
         rv_message =  | Work order { iv_work_order_id } was not inserted correctly : { lx_sql_db->get_text(  ) }|  .
         rv_valid = abap_false.
         RETURN.

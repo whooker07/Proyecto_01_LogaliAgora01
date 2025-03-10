@@ -144,6 +144,17 @@ CLASS zcl_wo_validator_agora01 IMPLEMENTATION.
 
   METHOD check_customer_exists.
 
+    SELECT SINGLE FROM ztcustomer_inf
+    FIELDS *
+    WHERE customer_id = @iv_customer_id
+    INTO @DATA(ls_customer).
+
+    IF sy-subrc = 0.
+      rv_exists = abap_true.
+    ELSE.
+      rv_exists = abap_false.
+    ENDIF.
+
   ENDMETHOD.
 
   METHOD check_order_exists.
@@ -155,10 +166,30 @@ CLASS zcl_wo_validator_agora01 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD check_technician_exists.
+    SELECT SINGLE FROM zttechnician_inf
+  FIELDS *
+  WHERE technician_id = @iv_technician_id
+  INTO @DATA(ls_technician).
+
+    IF sy-subrc = 0.
+      rv_exists = abap_true.
+    ELSE.
+      rv_exists = abap_false.
+    ENDIF.
 
   ENDMETHOD.
 
   METHOD check_priority_exists.
+        SELECT SINGLE FROM ztpriority_inf
+  FIELDS *
+  WHERE priority_code = @iv_priority_id
+  INTO @DATA(ls_priority).
+
+    IF sy-subrc = 0.
+      rv_exists = abap_true.
+    ELSE.
+      rv_exists = abap_false.
+    ENDIF.
 
   ENDMETHOD.
 

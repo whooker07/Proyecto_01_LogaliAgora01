@@ -158,6 +158,16 @@ CLASS zcl_wo_validator_agora01 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD check_order_exists.
+      SELECT SINGLE FROM ztwork_order
+    FIELDS *
+    WHERE work_order_id = @iv_work_order_id
+    INTO @DATA(ls_workorder).
+
+    IF sy-subrc = 0.
+      rv_exists = abap_true.
+    ELSE.
+      rv_exists = abap_false.
+    ENDIF.
 
   ENDMETHOD.
 

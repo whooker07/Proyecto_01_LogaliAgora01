@@ -6,9 +6,13 @@ CLASS zcl_wo_crud_test_agora01 DEFINITION
   PUBLIC SECTION.
     INTERFACES if_oo_adt_classrun.
     METHODS:
-            test_create_work_order
-                        EXPORTING rv_valid         TYPE abap_bool
-                                  rv_message       TYPE string.
+      test_create_work_order
+        EXPORTING rv_valid   TYPE abap_bool
+                  rv_message TYPE string,
+      test_read_work_order
+        EXPORTING rv_valid        TYPE abap_bool
+                  rv_message      TYPE string
+                  rv_ls_workorder TYPE ztwork_order.
 
   PROTECTED SECTION.
   PRIVATE SECTION.
@@ -18,14 +22,38 @@ ENDCLASS.
 
 CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
   METHOD if_oo_adt_classrun~main.
-        DATA: lv_message TYPE string,
-          lv_valid   TYPE abap_bool.
+    DATA: lv_message TYPE string,
+          lv_valid   TYPE abap_bool,
+          lv_test    TYPE c.  "1-create, 2-read, 3-update, 4-delete
 
-  test_create_work_order(   IMPORTING
-                                      rv_valid = lv_valid
-                                      rv_message = lv_message ).
+    DATA ls_workorder TYPE ztwork_order.
 
-  out->write( | { lv_message }| ).
+    lv_test = '2'.
+
+    CASE lv_test.
+      WHEN '1'.
+        test_create_work_order(   IMPORTING
+                                            rv_valid = lv_valid
+                                            rv_message = lv_message ).
+
+        out->write( | { lv_message }| ).
+
+
+      WHEN '2'.
+        test_read_work_order(   IMPORTING
+                                            rv_valid = lv_valid
+                                            rv_message = lv_message
+                                            rv_ls_workorder = ls_workorder ).
+        IF lv_valid = abap_false.
+          out->write( | { lv_message } | ).
+        ELSE.
+          out->write(  ls_workorder ).
+        ENDIF.
+
+
+
+    ENDCASE.
+
   ENDMETHOD.
 
   METHOD test_create_work_order.
@@ -45,6 +73,25 @@ CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
                                       IMPORTING
                                       rv_valid = rv_valid
                                       rv_message = rv_message ).
+
+
+
+
+  ENDMETHOD.
+
+  METHOD test_read_work_order.
+
+    DATA(lo_instance) = NEW zcl_wo_crud_handler_agora01( ).
+
+    " Llamar al método de instancia
+
+    lo_instance->read_work_order( EXPORTING  iv_work_order_id = 2
+
+                                      IMPORTING
+                                      rv_valid = rv_valid
+                                      rv_message = rv_message
+                                      rv_ls_work_order = rv_ls_workorder ).
+
 
 
 

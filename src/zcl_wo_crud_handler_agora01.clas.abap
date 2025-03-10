@@ -13,7 +13,14 @@ CLASS zcl_wo_crud_handler_agora01 DEFINITION
                                   iv_description   TYPE string
                                   iv_creation_date TYPE d
                         EXPORTING rv_valid         TYPE abap_bool
-                                  rv_message       TYPE string.
+                                  rv_message       TYPE string,
+
+      read_work_order IMPORTING iv_work_order_id TYPE zde_workorderid_agora01
+
+                      EXPORTING rv_valid         TYPE abap_bool
+                                rv_message       TYPE string
+                                rv_ls_work_order TYPE ztwork_order.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -62,6 +69,24 @@ CLASS zcl_wo_crud_handler_agora01 IMPLEMENTATION.
     ENDIF.
 
 
+
+
+  ENDMETHOD.
+
+  METHOD read_work_order.
+    SELECT SINGLE FROM ztwork_order
+    FIELDS *
+    WHERE work_order_id = @iv_work_order_id
+    INTO @rv_ls_work_order.
+
+    IF sy-subrc = 0.
+      rv_message =  | Work order { iv_work_order_id } exitss|  .
+      rv_valid = abap_true.
+
+    ELSE.
+      rv_message =  | Work order { iv_work_order_id } Not exists |  .
+      rv_valid = abap_false.
+    ENDIF.
 
 
   ENDMETHOD.

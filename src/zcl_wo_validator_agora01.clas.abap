@@ -14,7 +14,6 @@ CLASS zcl_wo_validator_agora01 DEFINITION
                                       iv_status        TYPE string
                             RETURNING VALUE(rv_valid)  TYPE abap_bool,
       validate_delete_order IMPORTING iv_work_order_id TYPE string
-                                      iv_status        TYPE string
                             RETURNING VALUE(rv_valid)  TYPE abap_bool,
       validate_status_and_priority IMPORTING iv_status       TYPE string
                                              iv_priority     TYPE string
@@ -35,7 +34,9 @@ CLASS zcl_wo_validator_agora01 DEFINITION
       check_priority_exists IMPORTING iv_priority_id   TYPE string
                             RETURNING VALUE(rv_exists) TYPE abap_bool,
       check_status_exists IMPORTING iv_status_id     TYPE string
-                          RETURNING VALUE(rv_exists) TYPE abap_bool.
+                          RETURNING VALUE(rv_exists) TYPE abap_bool,
+      check_order_status IMPORTING iv_work_order_id TYPE string
+                         RETURNING VALUE(rv_status) TYPE string.
 
 
 
@@ -101,8 +102,11 @@ CLASS zcl_wo_validator_agora01 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
+
+
     " Check if the order status is "PE" (Pending)
-    IF iv_status NE 'PE'.
+    DATA(lv_order_status) = check_order_status( iv_work_order_id ).
+    IF lv_order_status NE 'PE'.
       rv_valid = abap_false.
       RETURN.
     ENDIF.
@@ -158,10 +162,10 @@ CLASS zcl_wo_validator_agora01 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD check_order_exists.
-      SELECT SINGLE FROM ztwork_order
-    FIELDS *
-    WHERE work_order_id = @iv_work_order_id
-    INTO @DATA(ls_workorder).
+    SELECT SINGLE FROM ztwork_order
+  FIELDS *
+  WHERE work_order_id = @iv_work_order_id
+  INTO @DATA(ls_workorder).
 
     IF sy-subrc = 0.
       rv_exists = abap_true.
@@ -172,6 +176,19 @@ CLASS zcl_wo_validator_agora01 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD check_order_history.
+
+* check if the order have history
+    SELECT SINGLE FROM ztwork_orderhist
+    FIELDS *
+    WHERE work_order_id = @iv_work_order_id
+    INTO @DATA(ls_work_orderhist).
+
+    IF sy-subrc = 0.
+      rv_exists = abap_true.
+    ELSE.
+      rv_exists = abap_false.
+    ENDIF.
+
 
   ENDMETHOD.
 
@@ -190,10 +207,10 @@ CLASS zcl_wo_validator_agora01 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD check_priority_exists.
-        SELECT SINGLE FROM ztpriority_inf
-  FIELDS *
-  WHERE priority_code = @iv_priority_id
-  INTO @DATA(ls_priority).
+    SELECT SINGLE FROM ztpriority_inf
+FIELDS *
+WHERE priority_code = @iv_priority_id
+INTO @DATA(ls_priority).
 
     IF sy-subrc = 0.
       rv_exists = abap_true.
@@ -204,7 +221,29 @@ CLASS zcl_wo_validator_agora01 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD check_status_exists.
+    SELECT SINGLE FROM ztstatus_inf
+FIELDS *
+WHERE status_code = @iv_status_id
+INTO @DATA(ls_priority).
 
+    IF sy-subrc = 0.
+      rv_exists = abap_true.
+    ELSE.
+      rv_exists = abap_false.
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD check_order_status.
+    SELECT SINGLE FROM ztwork_order
+  FIELDS *
+  WHERE work_order_id = @iv_work_order_id
+  INTO @DATA(ls_workorder).
+
+    IF sy-subrc = 0.
+      rv_status = ls_workorder-status.
+    ELSE.
+      rv_status = ''.
+    ENDIF.
   ENDMETHOD.
 
 ENDCLASS.

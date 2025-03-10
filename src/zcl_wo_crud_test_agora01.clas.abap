@@ -12,7 +12,10 @@ CLASS zcl_wo_crud_test_agora01 DEFINITION
       test_read_work_order
         EXPORTING rv_valid        TYPE abap_bool
                   rv_message      TYPE string
-                  rv_ls_workorder TYPE ztwork_order.
+                  rv_ls_workorder TYPE ztwork_order,
+      test_delete_work_order
+        EXPORTING rv_valid   TYPE abap_bool
+                  rv_message TYPE string.
 
   PROTECTED SECTION.
   PRIVATE SECTION.
@@ -49,6 +52,13 @@ CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
         ELSE.
           out->write(  ls_workorder ).
         ENDIF.
+
+      WHEN '3'.
+        test_delete_work_order(   IMPORTING
+                                            rv_valid = lv_valid
+                                            rv_message = lv_message ).
+
+        out->write( | { lv_message }| ).
 
 
 
@@ -95,6 +105,10 @@ CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
 
 
 
+
+  ENDMETHOD.
+
+  METHOD test_delete_work_order.
 
   ENDMETHOD.
 

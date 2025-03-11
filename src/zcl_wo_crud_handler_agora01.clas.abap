@@ -27,7 +27,7 @@ CLASS zcl_wo_crud_handler_agora01 DEFINITION
                                   iv_status        TYPE string
                                   iv_description   TYPE string
                                   iv_creation_date TYPE d
-                                  iv_change_description   TYPE string
+
                         EXPORTING rv_valid         TYPE abap_bool
                                   rv_message       TYPE string,
       delete_work_order IMPORTING iv_work_order_id TYPE zde_workorderid_agora01
@@ -144,7 +144,7 @@ CLASS zcl_wo_crud_handler_agora01 IMPLEMENTATION.
 
   METHOD update_work_order.
 
-
+    DATA: lv_cambios TYPE string.
     DATA(lo_instance) = NEW zcl_wo_validator_agora01( ).
 
     " Llamar al método de instancia
@@ -180,6 +180,30 @@ CLASS zcl_wo_crud_handler_agora01 IMPLEMENTATION.
 
     IF sy-subrc = 0.
 
+      IF ls_workorder-customer_id   NE iv_customer_id.
+        lv_cambios = | / Cust Before: { ls_workorder-customer_id }  , After iv_customer_id |.
+      ENDIF.
+
+      IF ls_workorder-technician_id   NE iv_technician_id.
+        lv_cambios = lv_cambios && | / Technician Before: { ls_workorder-technician_id }  , After : { iv_technician_id  } |.
+      ENDIF.
+
+      IF ls_workorder-priority   NE iv_priority.
+        lv_cambios = lv_cambios && | / Priority Before: { ls_workorder-Priority }  , After : { iv_Priority  } |.
+      ENDIF.
+
+      IF ls_workorder-status   NE iv_status.
+        lv_cambios = lv_cambios && | / Status Before: { ls_workorder-status }  , After : { iv_status  } |.
+      ENDIF.
+
+      IF ls_workorder-description   NE iv_description.
+        lv_cambios = lv_cambios && | / Description Before: { ls_workorder-description }  , After : { iv_description  } |.
+      ENDIF.
+
+      IF ls_workorder-creation_date   NE iv_creation_date.
+        lv_cambios = lv_cambios && | / Creation Date Before: { ls_workorder-creation_date }  , After : { iv_creation_date  } |.
+      ENDIF.
+
       ls_workorder-customer_id   = iv_customer_id.
       ls_workorder-technician_id = iv_technician_id.
       ls_workorder-priority      = iv_priority.
@@ -203,8 +227,8 @@ CLASS zcl_wo_crud_handler_agora01 IMPLEMENTATION.
         DATA: ls_wohist TYPE ztwork_orderhist.
         DATA: lv_count TYPE i.
 
-data: lv_date type d.
-      lv_date = cl_abap_context_info=>get_system_date( ).
+        DATA: lv_date TYPE d.
+        lv_date = cl_abap_context_info=>get_system_date( ).
 
         SELECT COUNT(*)
           FROM ztwork_orderhist
@@ -212,20 +236,20 @@ data: lv_date type d.
 
 
 
-          ls_wohist = VALUE #( history_id = lv_count + 1
-                               work_order_id = iv_work_order_id
-                            change_description   = iv_change_description
-                            modification_date  = lv_date
-                             ).
+        ls_wohist = VALUE #( history_id = lv_count + 1
+                             work_order_id = iv_work_order_id
+                          change_description   = lv_cambios
+                          modification_date  = lv_date
+                           ).
 
-          INSERT ztwork_orderhist FROM @ls_wohist.
-          IF sy-subrc = 0.
-            rv_message =  | Work order { iv_work_order_id } updated correctly with history in table|  .
-            rv_valid = abap_true.
-          ELSE.
-            rv_message =  | Work order { iv_work_order_id } not updated correctly with history in table|  .
-            rv_valid = abap_true.
-          ENDIF.
+        INSERT ztwork_orderhist FROM @ls_wohist.
+        IF sy-subrc = 0.
+          rv_message =  | Work order { iv_work_order_id } updated correctly with history in table|  .
+          rv_valid = abap_true.
+        ELSE.
+          rv_message =  | Work order { iv_work_order_id } not updated correctly with history in table|  .
+          rv_valid = abap_true.
+        ENDIF.
 
 
 

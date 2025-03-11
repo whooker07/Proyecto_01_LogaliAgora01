@@ -141,14 +141,14 @@ CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
 
     " Llamar al método de instancia
 
-    lo_instance->update_work_order( EXPORTING  iv_work_order_id = 3
+    lo_instance->update_work_order( EXPORTING  iv_work_order_id = 5
                                       iv_customer_id  = '1'
                                       iv_technician_id = '1'
                                       iv_priority = 'B'
-                                      iv_status = 'CO'
-                                      iv_description = ' modifcado wo prueba '
+                                      iv_status = 'PE'
+                                      iv_description = '  ok modifcado wo prueba '
                                       iv_creation_date = '20250310'
-                                      iv_change_description = ' se modifica el estado a cerrada '
+
                                       IMPORTING
                                       rv_valid = rv_valid
                                       rv_message = rv_message ).

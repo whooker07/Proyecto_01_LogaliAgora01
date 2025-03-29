@@ -35,7 +35,7 @@ CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
     DATA ls_workorder TYPE ztwork_order.
 
 *  test crud
-    lv_test = '3'.
+    lv_test = '4'.
 
     CASE lv_test.
       WHEN '1'.
@@ -45,10 +45,8 @@ CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
 
         out->write( | { lv_message }| ).
 
-
       WHEN '2'.
-        test_read_work_order(   IMPORTING
-                                            rv_valid = lv_valid
+        test_read_work_order(   IMPORTING   rv_valid = lv_valid
                                             rv_message = lv_message
                                             rv_ls_workorder = ls_workorder ).
         IF lv_valid = abap_false.
@@ -58,15 +56,12 @@ CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
         ENDIF.
 
       WHEN '3'.
-        test_update_work_order(   IMPORTING
-                                            rv_valid = lv_valid
+        test_update_work_order(   IMPORTING rv_valid = lv_valid
                                             rv_message = lv_message ).
-
         out->write( | { lv_message }| ).
 
       WHEN '4'.
-        test_delete_work_order(   IMPORTING
-                                            rv_valid = lv_valid
+        test_delete_work_order(   IMPORTING rv_valid = lv_valid
                                             rv_message = lv_message ).
 
         IF lv_valid = abap_false.
@@ -90,13 +85,13 @@ CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
 
     " Llamar al método de instancia
 
-    lo_instance->create_work_order( EXPORTING  iv_work_order_id = 9
+    lo_instance->create_work_order( EXPORTING  iv_work_order_id = 11
                                       iv_customer_id  = '1'
                                       iv_technician_id = '1'
                                       iv_priority = 'A'
                                       iv_status = 'PE'
-                                      iv_description = 'insertando wo prueba'
-                                      iv_creation_date = '20250308'
+                                      iv_description = 'insertando wo prueba 11'
+                                      iv_creation_date = '20250329'
                                       IMPORTING
                                       rv_valid = rv_valid
                                       rv_message = rv_message ).
@@ -112,7 +107,7 @@ CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
 
     " Llamar al método de instancia
 
-    lo_instance->read_work_order( EXPORTING  iv_work_order_id = 9
+    lo_instance->read_work_order( EXPORTING  iv_work_order_id = 20
 
                                       IMPORTING
                                       rv_valid = rv_valid
@@ -128,7 +123,7 @@ CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
 
     " Llamar al método de instancia
 
-    lo_instance->delete_work_order( EXPORTING  iv_work_order_id = 4
+    lo_instance->delete_work_order( EXPORTING  iv_work_order_id = 11
 
                                       IMPORTING
                                       rv_valid = rv_valid
@@ -141,13 +136,13 @@ CLASS zcl_wo_crud_test_agora01 IMPLEMENTATION.
 
     " Llamar al método de instancia
 
-    lo_instance->update_work_order( EXPORTING  iv_work_order_id = 5
+    lo_instance->update_work_order( EXPORTING  iv_work_order_id = 6
                                       iv_customer_id  = '1'
                                       iv_technician_id = '1'
                                       iv_priority = 'B'
                                       iv_status = 'PE'
-                                      iv_description = '  ok modifcado wo prueba '
-                                      iv_creation_date = '20250310'
+                                      iv_description = '  ok modificando wo 6 '
+                                      iv_creation_date = '20250329'
 
                                       IMPORTING
                                       rv_valid = rv_valid
